@@ -10,6 +10,7 @@ type BaseMessage struct {
 	text          string
 	displayAuthor string
 	authorId      idType
+	threadId      idType
 	date          time.Time
 }
 
@@ -18,7 +19,7 @@ func NewBaseMessage() *BaseMessage {
 		NewBaseEntity(basemessagestore, func() Entity {
 			return NewBaseMessage()
 		}, cloneBaseMessage),
-		MessageCode(0), "", "", idType(0), time.Time{}}
+		MessageCode(0), "", "", idType(0), idType(0), time.Time{}}
 }
 
 //Attributes.
@@ -55,6 +56,15 @@ func (m *BaseMessage) AuthorId() idType {
 
 func (m *BaseMessage) SetAuthorId(authorId idType) Message {
 	m.authorId = authorId
+	return m
+}
+
+func (m *BaseMessage) ThreadId() idType {
+	return m.threadId
+}
+
+func (m *BaseMessage) SetThreadId(threadId idType) Message {
+	m.threadId = threadId
 	return m
 }
 

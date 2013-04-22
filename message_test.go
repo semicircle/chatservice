@@ -13,6 +13,7 @@ func randmessage(newmsg newmsgfunc) Message {
 	ret := newmsg()
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	ret.SetAuthorId(idType(r.Int()))
+	ret.SetThreadId(idType(r.Int()))
 	ret.SetDisplyAuthor(strconv.Itoa(r.Int()))
 	ret.SetText(strconv.Itoa(r.Int()))
 	ret.SetType(MessageCode(r.Int() % 3))
@@ -27,7 +28,7 @@ func messagetest1(t *testing.T, newmsg newmsgfunc) {
 		var x, y Message
 		x, _ = a.(Message)
 		y, _ = b.(Message)
-		ret := (x.AuthorId() == y.AuthorId()) && (x.Date() == y.Date()) && (x.DisplyAuthor() == y.DisplyAuthor()) && (x.Text() == y.Text()) && (x.Type() == y.Type())
+		ret := (x.ThreadId() == y.ThreadId()) && (x.AuthorId() == y.AuthorId()) && (x.Date() == y.Date()) && (x.DisplyAuthor() == y.DisplyAuthor()) && (x.Text() == y.Text()) && (x.Type() == y.Type())
 		return ret
 	})
 }

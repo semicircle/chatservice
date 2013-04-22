@@ -180,14 +180,15 @@ func TestIntegrate2_3(t *testing.T) {
 	chMsgAuthorId := make(chan int)
 	chMsgDate := make(chan int)
 	chMsgDisplyAuthor := make(chan int)
-	var factMsgCnt, factMsgText, factMsgAuthorId, factMsgDate, factMsgDisplyAuthor int
+	chMsgThreadId := make(chan int)
+	var factMsgCnt, factMsgText, factMsgAuthorId, factMsgThreadId, factMsgDate, factMsgDisplyAuthor int
 
 	r := rand.New(rand.NewSource(time.Now().Unix()))
 	chTestStop := make(chan time.Time)
 	//polling
 	for i := 0; i < USER_NUM; i++ {
 		go func(inner User) {
-			var msgCnt, msgText, msgAuthorId, msgDate, msgDisplyAuthor int
+			var msgCnt, msgText, msgAuthorId, msgThreadId, msgDate, msgDisplyAuthor int
 			for {
 				msgs := inner.WaitRecvMessage(chTestStop)
 				if msgs == nil {
@@ -196,6 +197,7 @@ func TestIntegrate2_3(t *testing.T) {
 					chMsgAuthorId <- msgAuthorId
 					chMsgDate <- msgDate
 					chMsgDisplyAuthor <- msgDisplyAuthor
+					chMsgThreadId <- msgThreadId
 					return
 				} else {
 					//fmt.Println("WaitRecvMessage: msgs != null")
@@ -204,6 +206,7 @@ func TestIntegrate2_3(t *testing.T) {
 						msgTextInc, _ := strconv.Atoi(msg.Text())
 						msgText += msgTextInc
 						msgAuthorId += int(msg.AuthorId())
+						msgThreadId += int(msg.ThreadId())
 						msgDate += int(msg.Date().UnixNano()) % 1000
 						msgDisplyAuthorInc, _ := strconv.Atoi(msg.DisplyAuthor())
 						msgDisplyAuthor += msgDisplyAuthorInc
@@ -225,14 +228,17 @@ func TestIntegrate2_3(t *testing.T) {
 				// a little bit boring...
 				msgtext := r.Int() % 1000
 				msgauthorid := inner.Id()
+				msgthreadid := th.Id()
 				msgdate := time.Now()
 				msgdisplyauthor := r.Int() % 1000
 				factMsgText += msgtext
 				factMsgAuthorId += int(msgauthorid)
 				factMsgDate += int(msgdate.UnixNano()) % 1000
 				factMsgDisplyAuthor += msgdisplyauthor
+				factMsgThreadId += int(msgthreadid)
 				msg.SetText(strconv.Itoa(msgtext))
-				msg.SetAuthorId(inner.Id())
+				msg.SetAuthorId(msgauthorid)
+				msg.SetThreadId(msgthreadid)
 				msg.SetDate(msgdate)
 				msg.SetDisplyAuthor(strconv.Itoa(msgdisplyauthor))
 				msg.Save()
@@ -260,6 +266,7 @@ func TestIntegrate2_3(t *testing.T) {
 		msgAuthorId := <-chMsgAuthorId
 		msgDate := <-chMsgDate
 		msgDisplyAuthor := <-chMsgDisplyAuthor
+		msgThreadId := <-chMsgThreadId
 		if msgCnt != factMsgCnt {
 			t.Errorf("msgCnt: msgCnt:%d factMsgCnt:%d", msgCnt, factMsgCnt)
 		}
@@ -274,6 +281,9 @@ func TestIntegrate2_3(t *testing.T) {
 		}
 		if msgDisplyAuthor != factMsgDisplyAuthor {
 			t.Errorf("msgDisplyAuthor: msgDisplyAuthor:%d factMsgDisplyAuthor:%d", msgDisplyAuthor, factMsgDisplyAuthor)
+		}
+		if msgThreadId != factMsgThreadId {
+			t.Errorf("msgThreadId: msgThreadId:%d factMsgThreadId:%d", msgThreadId, factMsgThreadId)
 		}
 	}
 }
