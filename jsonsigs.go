@@ -21,31 +21,31 @@ type sigHead struct {
 
 //inner type user
 type user struct {
-	Id         idType `json:",string"`
-	Nick       string
-	PrivateKey keyType `json:",string"`
+	Id         idType  `json:",string,omitempty"`
+	Nick       string  `json:",omitempty"`
+	PrivateKey keyType `json:"PrivateKey,string,omitempty"`
 }
 
 //inner type msg
 type message struct {
 	Id     idType `json:",string"`
-	Author user   //Not make sense when post request
-	Thread thread
+	Author user   `json:",omitempty"` //Not make sense when post request
+	Thread thread `json:",omitempty"`
 	Text   string
-	Level  MessageCode `json:",int"` //Not make sense when post request
+	Level  MessageCode `json:",int"`
 	Date   time.Time
 }
 
 //inner type thread
 type thread struct {
 	Id    idType `json:",string"`
-	Title string
+	Title string `json:",omitempty"`
 }
 
 //inner type group
 type group struct {
 	Id    idType `json:",string"`
-	Title string
+	Title string `json:",omitempty"`
 }
 
 //

@@ -13,10 +13,10 @@ func TestJsonSig(t *testing.T) {
 
 	object.Date = time.Now()
 	object.Id = idType(1234)
-	// object.Author.Id = idType(4321)
-	// object.Author.Nick = "nick"
-	// object.Author.PrivateKey = keyType(98776)
-	// object.Level = MessageCode(1)
+	object.Author.Id = idType(4321)
+	object.Author.Nick = "nick"
+	object.Author.PrivateKey = keyType(0)
+	object.Level = MessageCode(1)
 	object.Text = "UTF8测试 , 中文可不可以?"
 
 	var jsondata []byte

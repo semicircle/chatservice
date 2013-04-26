@@ -7,10 +7,10 @@ import (
 type MessageCode int
 
 const (
-	MESSAGE_TYPE_NORMAL      = 0 // thread messages
-	MESSAGE_TYPE_NOTIFY      = 1 // join / leave thread.
-	MESSAGE_TYPE_SYSTEM      = 2 // "the system is going to reboot"
-	MESSAGE_TYPE_USERPRIVATE = 3 // "hi~"
+	MESSAGE_TYPE_NORMAL      = iota // thread messages
+	MESSAGE_TYPE_NOTIFY             // join / leave thread.
+	MESSAGE_TYPE_SYSTEM             // "the system is going to reboot"
+	MESSAGE_TYPE_USERPRIVATE        // "hi~"
 )
 
 type Message interface {
